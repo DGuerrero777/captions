@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<input type="file" id="fileInput" multiple>
+
+<script>
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const files = e.target.files;
+
+    for (let file of files) {
+        if (file.type !== "text/plain" && file.type !== "") {
+            console.log("Not a valid file type.");
+            continue;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            const newText = text.replace(/(\d{2}:\d{2}:\d{2})\.(\d{3})/g, "$1,$2");
+            const blob = new Blob([newText], {type: "text/plain"});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = file.name;
+            link.click();
+        }
+        reader.readAsText(file);
+    }
+});
+</script>
+
+</body>
+</html>
